@@ -87,50 +87,50 @@ def print_avp(app, msg, args):
         continue
       else:
         print(b"- %d\t-\t%s" % (avp.code, avp.name))
-    else:
-      data = []
-      for avp in list_avps(msg):
-        # ignore the non-mandatory avps if args.rmopt is set
-        if args.rmopt and not avp.M and \
-          not(avp.code in args.addavp):
-          continue
-        else:
-          data.append([avp.code, avp.name])
-      print(json.dumps(data))
+  else:
+    data = []
+    for avp in list_avps(msg):
+      # ignore the non-mandatory avps if args.rmopt is set
+      if args.rmopt and not avp.M and \
+        not(avp.code in args.addavp):
+        continue
+      else:
+        data.append([avp.code, avp.name])
+    print(json.dumps(data))
 
 def python_creator(app, msg, args):
   data = b"m = Msg(R=True, P=False, E=False, T=False,  code=%d, app_id=%d, avps=[\n" % (msg.code, app.id)
-
+  out=b''
   for avp in list_avps(msg):
     if avp.M:
-      out = b"# %s (datatype:%s) \n" % (avp.name, avp.datatype)
+      out += b"\t # %s (datatype:%s) \n" % (avp.name, avp.datatype)
     else:
       # If the --rmopt is set, do not print optionnals avp
       if args.rmopt and not(avp.code in args.addavp):
         continue
       else:
-        out = b"# OPTIONAL %s (datatype:%s) \n" % (avp.name, avp.datatype)
-      if avp.datatype == "Enumerated":
-        out += b"# Possible values:\n"
-        for i in avp.val_to_desc:
-          out += b"# %d: %s \n" % (i, avp.val_to_desc[i])
-        # Pythonic avps lines construction
-        out += b"\t Avp(code=%d, " % avp.code
-        if avp.M == True:
-          out += b"M=%r, " %avp.M
-        if avp.P == True:
-          out += b"P=%r, " %avp.P
-        if avp.V == True:
-          out += b"vendor_id=%d, " % avp.vendor_id
-
-        # To fix: allows_stacking != Grouped
-        if avp.allows_stacking == True:
-          out += b"avps=[], "
-        
-        if avp.datatype == "Enumerated":
-          out += b"u32=), \n\n"
-        else:
-          out += b"data=''), \n\n"
+        out += b"\t # OPTIONAL %s (datatype:%s) \n" % (avp.name, avp.datatype)
+    
+    if avp.datatype == "Enumerated":
+      out += b"\t # Possible values:\n"
+      for i in avp.val_to_desc:
+        out += b"\t # %d: %s \n" % (i, avp.val_to_desc[i])
+      # Pythonic avps lines construction
+    out += b"\t Avp(code=%d, " % avp.code
+    if avp.M == True:
+      out += b"M=%r, " %avp.M
+    if avp.P == True:
+      out += b"P=%r, " %avp.P
+    if avp.V == True:
+      out += b"vendor_id=%d, " % avp.vendor_id
+    # To fix: allows_stacking != Grouped
+    if avp.allows_stacking == True:
+      out += b"avps=[], "
+      
+    if avp.datatype == "Enumerated":
+      out += b"u32=), \n\n"
+    else:
+      out += b"data=''), \n\n"
         
   data += out
   data += b"])"
