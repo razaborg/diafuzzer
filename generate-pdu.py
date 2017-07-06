@@ -103,20 +103,20 @@ def python_creator(app, msg, args):
   out=b''
   for avp in list_avps(msg):
     if avp.M:
-      out += b"\t # %s (datatype:%s) \n" % (avp.name, avp.datatype)
+      out += b"  # %s (datatype:%s) \n" % (avp.name, avp.datatype)
     else:
       # If the --rmopt is set, do not print optionnals avp
       if args.rmopt and not(avp.code in args.addavp):
         continue
       else:
-        out += b"\t # OPTIONAL %s (datatype:%s) \n" % (avp.name, avp.datatype)
+        out += b"  # OPTIONAL %s (datatype:%s) \n" % (avp.name, avp.datatype)
     
     if avp.datatype == "Enumerated":
-      out += b"\t # Possible values:\n"
+      out += b"  # Possible values:\n"
       for i in avp.val_to_desc:
-        out += b"\t # %d: %s \n" % (i, avp.val_to_desc[i])
+        out += b"    # %d: %s \n" % (i, avp.val_to_desc[i])
       # Pythonic avps lines construction
-    out += b"\t Avp(code=%d, " % avp.code
+    out += b"  Avp(code=%d, " % avp.code
     if avp.M == True:
       out += b"M=%r, " %avp.M
     if avp.P == True:
