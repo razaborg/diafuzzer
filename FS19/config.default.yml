@@ -1,0 +1,13 @@
+ip-default:
+  src-ip: '127.0.0.1'
+  src-port: 3868
+  dst-ip: '127.0.0.1'
+  dst-port: 29000
+  transport: 'sctp'
+
+diameter-default:
+  origin-host: 'mme1.testsec.fr'
+  origin-realm: 'mme.mnc999.mcc999.3gppnetwork.org'
+  host-ip-address: '127.0.0.1'
+  vendor-id: 323
+  product-name: 'w00t-sc4nn3r'
